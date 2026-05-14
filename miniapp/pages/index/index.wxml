@@ -1,0 +1,79 @@
+<view class="page">
+  <!-- 顶部 Tab 分类 -->
+  <scroll-view class="category-bar" scroll-x enable-flex show-scrollbar="{{false}}">
+    <view
+      class="category-tab {{item.id === currentCategory ? 'active' : ''}}"
+      wx:for="{{categories}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="switchCategory"
+    >
+      <text class="icon">{{item.icon}}</text>
+      <text class="name">{{item.name}}</text>
+    </view>
+  </scroll-view>
+
+  <!-- 菜品列表 -->
+  <scroll-view class="dish-list" scroll-y enhanced show-scrollbar="{{false}}">
+    <block wx:for="{{categories}}" wx:key="id">
+      <view class="category-section" wx:if="{{item.id === currentCategory}}">
+        <view class="dish-item" wx:for="{{item.dishes}}" wx:key="id" data-dish="{{item}}" bindtap="addToCart">
+          <view class="dish-info">
+            <view class="dish-name">{{item.name}}</view>
+            <view class="dish-desc" wx:if="{{item.description}}">{{item.description}}</view>
+            <view class="dish-price">¥{{item.price}}</view>
+          </view>
+          <view class="dish-add">
+            <text class="add-btn">+</text>
+          </view>
+        </view>
+      </view>
+    </block>
+
+    <view class="empty-state" wx:if="{{categories.length === 0 && !loading}}">
+      <text>🍽️</text>
+      <view class="hint">暂无菜品，请联系管理员添加</view>
+    </view>
+
+    <view class="loading" wx:if="{{loading}}">
+      <text>加载中...</text>
+    </view>
+  </scroll-view>
+
+  <!-- 购物车浮层 -->
+  <view class="cart-bar" wx:if="{{cartCount > 0}}">
+    <view class="cart-info" bindtap="toggleCart">
+      <view class="cart-icon">
+        <text>🛒</text>
+        <view class="cart-badge">{{cartCount}}</view>
+      </view>
+      <view class="cart-total">¥{{cartTotal}}</view>
+    </view>
+    <view class="cart-submit" bindtap="submitOrder">去下单</view>
+  </view>
+
+  <!-- 购物车详情弹窗 -->
+  <view class="cart-overlay {{showCart ? 'show' : ''}}" bindtap="toggleCart"></view>
+  <view class="cart-panel {{showCart ? 'show' : ''}}">
+    <view class="cart-header">
+      <text class="cart-title">购物车</text>
+      <text class="cart-clear" bindtap="clearCart">清空</text>
+    </view>
+    <scroll-view class="cart-items" scroll-y>
+      <view class="cart-item" wx:for="{{cart}}" wx:key="dish.id">
+        <view class="cart-item-info">
+          <text class="cart-item-name">{{item.dish.name}}</text>
+          <text class="cart-item-price">¥{{item.dish.price}}</text>
+        </view>
+        <view class="cart-item-qty">
+          <text class="qty-btn" data-dish-id="{{item.dish.id}}" data-delta="-1" bindtap="changeQty">−</text>
+          <text class="qty-num">{{item.quantity}}</text>
+          <text class="qty-btn" data-dish-id="{{item.dish.id}}" data-delta="1" bindtap="changeQty">+</text>
+        </view>
+      </view>
+    </scroll-view>
+    <view class="cart-remark">
+      <input placeholder="备注（选填）" value="{{remark}}" bindinput="onRemarkInput" />
+    </view>
+  </view>
+</view>

@@ -1,0 +1,62 @@
+<view class="page">
+  <view class="card" wx:if="{{order}}">
+    <view class="detail-header">
+      <text class="order-no">{{order.order_no}}</text>
+      <text class="status-tag {{order.status}}">{{getStatusText(order.status)}}</text>
+    </view>
+    <view class="detail-meta">
+      <text>下单人: {{order.member_name}}</text>
+      <text>{{order.created_at}}</text>
+    </view>
+    <view class="detail-remark" wx:if="{{order.remark}}">
+      💬 备注: {{order.remark}}
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="section-title">菜品明细</view>
+    <view class="item-row" wx:for="{{order.items}}" wx:key="id">
+      <view class="item-left">
+        <text class="item-name">{{item.dish_name}}</text>
+        <text class="item-qty">×{{item.quantity}}</text>
+      </view>
+      <view class="item-right">
+        <text class="item-price">¥{{item.subtotal}}</text>
+      </view>
+    </view>
+    <view class="total-row">
+      <text>合计</text>
+      <text class="total-price">¥{{order.total_price}}</text>
+    </view>
+  </view>
+
+  <!-- 大厨/管理员操作 -->
+  <view class="card action-card" wx:if="{{isChefOrAdmin && order && order.status !== 'done' && order.status !== 'cancelled'}}">
+    <view class="section-title">操作</view>
+    <view class="action-btns">
+      <button
+        class="action-btn cooking"
+        wx:if="{{order.status === 'pending'}}"
+        data-status="cooking"
+        bindtap="updateStatus"
+      >
+        👨‍🍳 开始制作
+      </button>
+      <button
+        class="action-btn done"
+        wx:if="{{order.status === 'cooking'}}"
+        data-status="done"
+        bindtap="updateStatus"
+      >
+        ✅ 已完成
+      </button>
+      <button
+        class="action-btn cancel"
+        data-status="cancelled"
+        bindtap="updateStatus"
+      >
+        ❌ 取消订单
+      </button>
+    </view>
+  </view>
+</view>

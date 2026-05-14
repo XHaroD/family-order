@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+*.db
+.DS_Store
+admin/dist
+miniapp/node_modules

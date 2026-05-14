@@ -1,0 +1,92 @@
+<view class="page">
+  <!-- Tab 切换 -->
+  <view class="admin-tabs">
+    <view class="admin-tab {{tab === 'orders' ? 'active' : ''}}" data-tab="orders" bindtap="switchTab">📋 订单</view>
+    <view class="admin-tab {{tab === 'dishes' ? 'active' : ''}}" data-tab="dishes" bindtap="switchTab">🍽️ 菜品</view>
+    <view class="admin-tab {{tab === 'categories' ? 'active' : ''}}" data-tab="categories" bindtap="switchTab">📂 分类</view>
+  </view>
+
+  <!-- 订单管理 -->
+  <view class="tab-content" wx:if="{{tab === 'orders'}}">
+    <view class="order-card" wx:for="{{orders}}" wx:key="id">
+      <view class="order-header">
+        <text>{{item.member_name}}</text>
+        <text class="status-tag {{item.status}}">{{getStatusText(item.status)}}</text>
+      </view>
+      <view class="order-info">{{item.created_at}} | {{item.items.length}}道菜 | ¥{{item.total_price}}</view>
+      <view class="order-actions">
+        <button wx:if="{{item.status === 'pending'}}" class="action-btn mini cooking" data-id="{{item.id}}" data-status="cooking" bindtap="updateOrderStatus">开始制作</button>
+        <button wx:if="{{item.status === 'cooking'}}" class="action-btn mini done" data-id="{{item.id}}" data-status="done" bindtap="updateOrderStatus">完成</button>
+        <button wx:if="{{item.status !== 'done' && item.status !== 'cancelled'}}" class="action-btn mini cancel" data-id="{{item.id}}" data-status="cancelled" bindtap="updateOrderStatus">取消</button>
+      </view>
+    </view>
+    <view class="empty-state" wx:if="{{orders.length === 0}}"><text>📋</text><view>暂无订单</view></view>
+  </view>
+
+  <!-- 菜品管理 -->
+  <view class="tab-content" wx:if="{{tab === 'dishes'}}">
+    <view class="add-btn-bar">
+      <button class="btn-primary add-dish-btn" bindtap="showAddDish">+ 添加菜品</button>
+    </view>
+    <view class="dish-card" wx:for="{{dishes}}" wx:key="id" data-dish="{{item}}" bindtap="showEditDish">
+      <view class="dish-top">
+        <text class="dish-name">{{item.name}}</text>
+        <text class="dish-price">¥{{item.price}}</text>
+      </view>
+      <view class="dish-meta">
+        <text>{{item.category_name || '未分类'}}</text>
+        <text class="{{item.status ? 'on' : 'off'}}">{{item.status ? '上架' : '下架'}}</text>
+      </view>
+      <view class="dish-actions-row">
+        <text class="del-btn" data-id="{{item.id}}" bindtap="deleteDish">删除</text>
+      </view>
+    </view>
+    <view class="empty-state" wx:if="{{dishes.length === 0}}"><text>🍽️</text><view>暂无菜品</view></view>
+  </view>
+
+  <!-- 分类管理 -->
+  <view class="tab-content" wx:if="{{tab === 'categories'}}">
+    <view class="add-btn-bar">
+      <button class="btn-primary add-dish-btn" bindtap="showAddCategory">+ 添加分类</button>
+    </view>
+    <view class="dish-card" wx:for="{{categories}}" wx:key="id" data-category="{{item}}" bindtap="showEditCategory">
+      <view class="dish-top">
+        <text class="dish-name">{{item.icon}} {{item.name}}</text>
+        <text class="dish-count">{{item.dish_count || 0}} 道菜</text>
+      </view>
+      <view class="dish-actions-row">
+        <text class="del-btn" data-id="{{item.id}}" bindtap="deleteCategory">删除</text>
+      </view>
+    </view>
+    <view class="empty-state" wx:if="{{categories.length === 0}}"><text>📂</text><view>暂无分类</view></view>
+  </view>
+
+  <!-- 菜品编辑弹窗 -->
+  <view class="modal-overlay {{showDishForm ? 'show' : ''}}" bindtap="{{showDishForm ? 'showDishForm' : ''}}" data-target="showDishForm"></view>
+  <view class="modal-panel {{showDishForm ? 'show' : ''}}">
+    <view class="modal-title">{{editDish ? '编辑菜品' : '添加菜品'}}</view>
+    <input class="modal-input" placeholder="菜品名称" value="{{dishForm.name}}" data-field="name" bindinput="onDishFieldChange" />
+    <input class="modal-input" placeholder="价格 (元)" type="digit" value="{{dishForm.price}}" data-field="price" bindinput="onDishFieldChange" />
+    <view class="modal-label">分类</view>
+    <view class="cat-selector">
+      <text class="cat-option {{dishForm.categoryId === cat.id ? 'active' : ''}}" wx:for="{{categories}}" wx:key="id" data-catid="{{cat.id}}" bindtap="onDishCategoryChange">{{cat.icon}} {{cat.name}}</text>
+    </view>
+    <input class="modal-input" placeholder="描述（选填）" value="{{dishForm.description}}" data-field="description" bindinput="onDishFieldChange" />
+    <view class="modal-btns">
+      <button class="modal-btn cancel" bindtap="{{showDishForm ? 'showDishForm' : ''}}" data-target="showDishForm">取消</button>
+      <button class="modal-btn confirm" bindtap="saveDish">保存</button>
+    </view>
+  </view>
+
+  <!-- 分类编辑弹窗 -->
+  <view class="modal-overlay {{showCategoryForm ? 'show' : ''}}" bindtap="{{showCategoryForm ? 'showCategoryForm' : ''}}" data-target="showCategoryForm"></view>
+  <view class="modal-panel {{showCategoryForm ? 'show' : ''}}">
+    <view class="modal-title">{{editCategory ? '编辑分类' : '添加分类'}}</view>
+    <input class="modal-input" placeholder="分类名称" value="{{categoryForm.name}}" data-field="name" bindinput="onCategoryFieldChange" />
+    <input class="modal-input" placeholder="图标 emoji (如 🥘)" value="{{categoryForm.icon}}" data-field="icon" bindinput="onCategoryFieldChange" />
+    <view class="modal-btns">
+      <button class="modal-btn cancel" bindtap="{{showCategoryForm ? 'showCategoryForm' : ''}}" data-target="showCategoryForm">取消</button>
+      <button class="modal-btn confirm" bindtap="saveCategory">保存</button>
+    </view>
+  </view>
+</view>

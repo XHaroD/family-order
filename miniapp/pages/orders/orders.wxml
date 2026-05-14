@@ -1,0 +1,46 @@
+<view class="page">
+  <!-- 状态筛选 -->
+  <scroll-view class="filter-bar" scroll-x show-scrollbar="{{false}}" enable-flex>
+    <view
+      class="filter-tab {{item.value === statusFilter ? 'active' : ''}}"
+      wx:for="{{filters}}"
+      wx:key="value"
+      data-value="{{item.value}}"
+      bindtap="setFilter"
+    >
+      {{item.label}}
+    </view>
+  </scroll-view>
+
+  <!-- 订单列表 -->
+  <view class="order-list">
+    <view
+      class="order-card"
+      wx:for="{{orders}}"
+      wx:key="id"
+      data-id="{{item.id}}"
+      bindtap="goDetail"
+    >
+      <view class="order-header">
+        <text class="order-no">{{item.order_no}}</text>
+        <text class="status-tag {{item.status}}">{{getStatusText(item.status)}}</text>
+      </view>
+      <view class="order-body">
+        <text class="order-member">{{item.member_name}}</text>
+        <text class="order-time">{{item.created_at}}</text>
+      </view>
+      <view class="order-footer">
+        <text class="order-count">{{item.items.length}} 道菜</text>
+        <text class="order-total">¥{{item.total_price}}</text>
+      </view>
+      <view class="order-remark" wx:if="{{item.remark}}">
+        💬 {{item.remark}}
+      </view>
+    </view>
+
+    <view class="empty-state" wx:if="{{orders.length === 0}}">
+      <text>📋</text>
+      <view class="hint">暂无订单</view>
+    </view>
+  </view>
+</view>
