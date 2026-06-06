@@ -1,191 +1,125 @@
-# 🍽️ 家庭点单系统
+# 家庭点单系统 🍽️
 
-一个面向家庭内部使用的点单小程序 + 管理后台，支持微信小程序点单、Web 管理后台、订单状态流转。
+一个简单的家庭点餐系统，支持微信小程序点餐、购物车、订单管理。
 
-## 📸 项目截图
+## 功能特性
 
-| 小程序点单 | 订单列表 | Web 管理后台 |
-|-----------|---------|------------|
-| 分类浏览 + 购物车 | 订单状态跟踪 | 菜品/订单/成员管理 |
+- 📱 微信小程序点餐
+- 🛒 购物车功能
+- 👤 昵称登录
+- 📋 订单管理（待处理/制作中/已完成）
+- 🏷️ 菜品分类管理
+- 👨‍👩‍👧‍👦 多成员支持
 
-## ✨ 功能特性
+## 技术栈
 
-### 小程序端（微信小程序）
-- ✅ **菜单浏览** — 按分类展示菜品，支持图片、价格、描述
-- ✅ **购物车** — 加入/修改数量/清空，底部悬浮
-- ✅ **一键下单** — 填写备注，提交订单
-- ✅ **订单跟踪** — 实时查看订单状态（待处理→制作中→已完成）
-- ✅ **个人中心** — 消费统计，角色标识
-- ✅ **管理后台（小程序内嵌）** — 大厨/管理员可直接在小程序中管理订单和菜品
+### 后端
+- Python 3.11
+- FastAPI
+- SQLAlchemy
+- MySQL 8.4
 
-### Web 管理后台（Vue 3 + Element Plus）
-- ✅ **数据概览** — 成员消费排行、订单统计
-- ✅ **菜品管理** — 增删改查、上下架切换
-- ✅ **分类管理** — 管理菜品分类
-- ✅ **订单管理** — 状态流转（待处理→制作中→已完成）
-- ✅ **成员管理** — 角色分配（成员/大厨/管理员）
+### 前端
+- 微信小程序原生框架
 
-### 后端 API（Node.js + Express）
-- ✅ RESTful API 设计
-- ✅ JWT 认证
-- ✅ SQLite 数据库（零配置，开箱即用）
-- ✅ 文件上传支持
-- ✅ Docker 一键部署
-
-## 🏗️ 项目结构
+## 项目结构
 
 ```
 family-order/
-├── server/                  # 后端 API (Node.js + Express + SQLite)
-│   ├── src/
-│   │   ├── index.ts         # 入口文件
-│   │   ├── db.ts            # 数据库初始化
-│   │   ├── init-db.ts       # 默认数据
-│   │   ├── middleware/
-│   │   │   └── auth.ts      # JWT 认证中间件
-│   │   └── routes/
-│   │       ├── auth.ts      # 登录认证
-│   │       ├── dishes.ts    # 菜品 CRUD
-│   │       ├── categories.ts # 分类 CRUD
-│   │       ├── orders.ts    # 订单管理
-│   │       ├── members.ts   # 成员管理
-│   │       └── upload.ts    # 文件上传
-│   └── package.json
-├── miniapp/                 # 微信小程序
+├── backend/            # 后端 API
+│   ├── main.py         # FastAPI 主程序
+│   ├── models.py       # 数据库模型
+│   ├── database.py     # 数据库连接
+│   └── init_db.py      # 数据库初始化脚本
+├── miniprogram/        # 微信小程序
 │   ├── pages/
-│   │   ├── index/           # 点单首页
-│   │   ├── orders/          # 订单列表
-│   │   ├── order-detail/    # 订单详情
-│   │   ├── profile/         # 个人中心
-│   │   └── admin/           # 管理后台
-│   └── utils/
-│       └── api.js           # API 封装
-├── admin/                   # Web 管理后台 (Vue 3 + Element Plus)
-│   ├── src/
-│   │   ├── views/           # 页面组件
-│   │   ├── router/          # 路由配置
-│   │   └── api/             # API 封装
-│   └── package.json
-├── docker-compose.yml       # Docker 一键部署
+│   │   ├── index/      # 菜单首页
+│   │   ├── login/      # 登录页
+│   │   ├── cart/       # 购物车
+│   │   └── orders/     # 订单列表
+│   ├── app.js
+│   ├── app.json
+│   └── app.wxss
 └── README.md
 ```
 
-## 🚀 快速开始
+## 快速开始
 
-### 方法一：本地开发
+### 1. 数据库配置
 
-#### 1. 启动后端
+确保 MySQL 已启动，创建数据库：
+
+```sql
+CREATE DATABASE family_order CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'family_user'@'%' IDENTIFIED BY 'your_password';
+GRANT ALL PRIVILEGES ON family_order.* TO 'family_user'@'%';
+FLUSH PRIVILEGES;
+```
+
+### 2. 后端启动
 
 ```bash
-cd server
-npm install
-npm run dev
+cd backend
+pip install -r requirements.txt
+
+# 初始化数据库
+python init_db.py
+
+# 启动服务
+uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-后端运行在 http://localhost:3000
+### 3. 小程序配置
 
-#### 2. 启动管理后台
+1. 用微信开发者工具打开 `miniprogram` 目录
+2. 修改 `app.js` 中的 `baseUrl` 为你的后端地址
+3. 编译运行
+
+## API 文档
+
+启动后端后访问：`http://localhost:8000/docs`
+
+### 主要接口
+
+- `POST /api/auth/login` - 登录
+- `GET /api/dishes` - 获取菜品列表
+- `GET /api/categories` - 获取分类列表
+- `POST /api/orders` - 创建订单
+- `GET /api/orders` - 获取订单列表
+- `PUT /api/orders/{id}/status` - 更新订单状态
+
+## 默认数据
+
+系统初始化后包含以下菜品：
+
+| 菜品 | 分类 | 价格 |
+|------|------|------|
+| 米饭 | 主食 | ¥3 |
+| 红烧肉 | 荤菜 | ¥28 |
+| 西红柿炒蛋 | 素菜 | ¥15 |
+| 紫菜蛋花汤 | 汤 | ¥10 |
+| 可乐 | 饮料 | ¥3 |
+| 宫保鸡丁 | 荤菜 | ¥25 |
+
+## 部署说明
+
+### Docker 部署（推荐）
 
 ```bash
-cd admin
-npm install
-npm run dev
+# MySQL
+docker run -d \
+  --name mysql \
+  -e MYSQL_ROOT_PASSWORD=your_password \
+  -v /path/to/mysql:/var/lib/mysql \
+  -p 3306:3306 \
+  mysql:8.4
+
+# 后端
+cd backend
+docker build -t family-order-api .
+docker run -d -p 8000:8000 family-order-api
 ```
 
-管理后台运行在 http://localhost:5173
-
-#### 3. 打开小程序
-
-1. 打开微信开发者工具
-2. 导入 `miniapp/` 目录
-3. 修改 `project.config.json` 中的 `appid` 为你的小程序 AppID
-4. 编译运行
-
-### 方法二：Docker 部署
-
-```bash
-docker-compose up -d
-```
-
-### 方法三：生产部署
-
-```bash
-# 构建后端
-cd server
-npm install
-npm run build
-npm start
-
-# 构建管理后台
-cd admin
-npm install
-npm run build
-# 将 dist/ 部署到 Nginx
-
-# 小程序
-# 在微信开发者工具中上传代码
-```
-
-## 📱 小程序使用说明
-
-### 首次使用
-1. 打开小程序 → 输入昵称 → 点击"进入"
-2. 首次登录自动创建账号，默认角色为"家庭成员"
-3. 请联系管理员在 Web 后台为你分配角色
-
-### 点单流程
-```
-浏览菜单 → 点击菜品加入购物车 → 查看购物车 → 填写备注 → 提交订单
-```
-
-### 订单状态
-- ⏳ **待处理** — 已下单，等待大厨确认
-- 👨‍🍳 **制作中** — 大厨正在做
-- ✅ **已完成** — 可以吃了
-- ❌ **已取消**
-
-## 🔧 管理后台使用
-
-访问 http://localhost:5173 ，输入昵称登录。
-
-首次启动会自动创建默认数据：
-- **管理员**：输入"管理员"登录
-- **大厨**：输入"张大厨"登录
-- **家庭码**：`family001`
-- **18 道默认菜品**，6 个分类
-
-### 角色权限
-
-| 操作 | 成员 | 大厨 | 管理员 |
-|------|------|------|--------|
-| 浏览菜单 | ✅ | ✅ | ✅ |
-| 下单 | ✅ | ✅ | ✅ |
-| 查看订单 | ✅ | ✅ | ✅ |
-| 制作/完成 | ❌ | ✅ | ✅ |
-| 管理菜品 | ❌ | ❌ | ✅ |
-| 管理成员 | ❌ | ❌ | ✅ |
-
-## ⚙️ 环境变量
-
-| 变量 | 默认值 | 说明 |
-|------|--------|------|
-| `PORT` | `3000` | 后端端口 |
-| `JWT_SECRET` | `family-order-secret-dev` | JWT 签名密钥（生产环境请修改） |
-
-## 🧪 技术栈
-
-| 层 | 技术 |
-|---|------|
-| 小程序 | 微信原生 |
-| 管理后台 | Vue 3 + Element Plus + Pinia |
-| 后端 | Node.js + Express + TypeScript |
-| 数据库 | SQLite (better-sqlite3) |
-| 部署 | Docker / Docker Compose |
-
-## 📄 License
+## License
 
 MIT
-
-## 🤝 贡献
-
-欢迎 Issue 和 PR！如果你觉得这个项目有用，请给个 ⭐️

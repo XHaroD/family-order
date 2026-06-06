@@ -1,0 +1,155 @@
+/* pages/index/index.wxss */
+.container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding-bottom: 120rpx;
+}
+
+.user-bar {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  padding: 20rpx 30rpx;
+}
+
+.user-name {
+  color: #fff;
+  font-size: 28rpx;
+}
+
+.category-tabs {
+  white-space: nowrap;
+  background: #fff;
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #eee;
+}
+
+.tab {
+  display: inline-block;
+  padding: 16rpx 30rpx;
+  margin: 0 10rpx;
+  font-size: 28rpx;
+  color: #666;
+  background: #f5f5f5;
+  border-radius: 30rpx;
+}
+
+.tab.active {
+  color: #fff;
+  background: #ff6b6b;
+}
+
+.menu-list {
+  padding: 20rpx;
+}
+
+.menu-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  margin-bottom: 20rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0,0,0,0.05);
+}
+
+.dish-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10rpx;
+}
+
+.dish-name {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.dish-status {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 20rpx;
+}
+
+.dish-status.on {
+  color: #52c41a;
+  background: #f6ffed;
+  border: 1rpx solid #b7eb8f;
+}
+
+.dish-status.off {
+  color: #ff4d4f;
+  background: #fff2f0;
+  border: 1rpx solid #ffccc7;
+}
+
+.dish-desc {
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 16rpx;
+}
+
+.dish-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dish-price {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #ff6b6b;
+}
+
+.add-btn {
+  width: 56rpx;
+  height: 56rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 36rpx;
+  font-weight: bold;
+}
+
+.empty-tip {
+  text-align: center;
+  padding: 100rpx 0;
+  color: #999;
+  font-size: 28rpx;
+}
+
+.cart-float {
+  position: fixed;
+  bottom: 180rpx;
+  right: 30rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e8e 100%);
+  border-radius: 50rpx;
+  padding: 16rpx 30rpx;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 8rpx 24rpx rgba(255,107,107,0.4);
+  z-index: 100;
+}
+
+.cart-icon {
+  font-size: 40rpx;
+  margin-right: 10rpx;
+}
+
+.cart-count {
+  background: #fff;
+  color: #ff6b6b;
+  font-size: 24rpx;
+  font-weight: bold;
+  min-width: 36rpx;
+  height: 36rpx;
+  line-height: 36rpx;
+  text-align: center;
+  border-radius: 36rpx;
+  margin-right: 10rpx;
+}
+
+.cart-text {
+  color: #fff;
+  font-size: 28rpx;
+}

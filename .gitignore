@@ -1,7 +1,40 @@
-node_modules/
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+*.egg-info/
 dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Environment
 .env
+.env.local
+
+# Database
 *.db
+*.sqlite3
+
+# OS
 .DS_Store
-admin/dist
-miniapp/node_modules
+Thumbs.db
+
+# Logs
+*.log
+
+# Miniprogram
+miniprogram/node_modules/
+miniprogram/package-lock.json
+
+# Node modules
+admin/node_modules/
+server/node_modules/

@@ -1,0 +1,39 @@
+<!--pages/order/index.wxml-->
+<view class="container">
+  <view class="card">
+    <view class="dish-info">
+      <text class="dish-name">{{dishName}}</text>
+      <text class="dish-price">¥{{price}}</text>
+    </view>
+    
+    <view class="quantity-control">
+      <text>数量：</text>
+      <view class="quantity-btn" bindtap="decrease">-</view>
+      <text class="quantity-num">{{quantity}}</text>
+      <view class="quantity-btn" bindtap="increase">+</view>
+    </view>
+    
+    <view class="total-price">
+      <text>小计：</text>
+      <text class="price-value">¥{{total}}</text>
+    </view>
+  </view>
+
+  <view class="card">
+    <view class="form-section">
+      <text class="form-label">您的姓名</text>
+      <input class="form-input" placeholder="请输入姓名" value="{{memberName}}" bindinput="onNameInput" />
+    </view>
+    
+    <view class="form-section">
+      <text class="form-label">备注（选填）</text>
+      <textarea class="form-textarea" placeholder="如：少辣、不要葱等" value="{{note}}" bindinput="onNoteInput" maxlength="100" />
+    </view>
+  </view>
+
+  <button class="submit-btn" bindtap="submitOrder" disabled="{{submitting}}">
+    {{submitting ? '提交中...' : '提交订单'}}
+  </button>
+
+  <view class="bottom-space"></view>
+</view>

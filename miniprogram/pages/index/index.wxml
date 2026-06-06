@@ -1,0 +1,54 @@
+<!--pages/index/index.wxml-->
+<view class="container">
+  <!-- 顶部用户信息 -->
+  <view class="user-bar" wx:if="{{userInfo}}">
+    <text class="user-name">👤 {{userInfo.nickname}}</text>
+  </view>
+
+  <!-- 分类标签 -->
+  <scroll-view class="category-tabs" scroll-x>
+    <view 
+      class="tab {{activeCategory === 0 ? 'active' : ''}}" 
+      bindtap="onCategoryChange"
+      data-id="0"
+    >全部</view>
+    <view 
+      wx:for="{{categories}}" 
+      wx:key="id"
+      class="tab {{activeCategory === item.id ? 'active' : ''}}" 
+      bindtap="onCategoryChange"
+      data-id="{{item.id}}"
+    >{{item.icon}} {{item.name}}</view>
+  </scroll-view>
+
+  <!-- 菜单列表 -->
+  <view class="menu-list">
+    <block wx:for="{{dishes}}" wx:key="id">
+      <view class="menu-card">
+        <view class="dish-info">
+          <view class="dish-header">
+            <text class="dish-name">{{item.name}}</text>
+            <view class="dish-status {{item.status === 1 ? 'on' : 'off'}}">
+              {{item.status === 1 ? '在售' : '下架'}}
+            </view>
+          </view>
+          <text class="dish-desc" wx:if="{{item.description}}">{{item.description}}</text>
+          <view class="dish-footer">
+            <text class="dish-price">¥{{item.price}}</text>
+            <view class="add-btn" bindtap="addToCart" data-item="{{item}}" wx:if="{{item.status === 1}}">
+              <text>+</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </block>
+    <view wx:if="{{dishes.length === 0}}" class="empty-tip">暂无菜品</view>
+  </view>
+
+  <!-- 底部购物车浮窗 -->
+  <view class="cart-float" wx:if="{{cartCount > 0}}" bindtap="goCart">
+    <view class="cart-icon">🛒</view>
+    <view class="cart-count">{{cartCount}}</view>
+    <view class="cart-text">去购物车</view>
+  </view>
+</view>

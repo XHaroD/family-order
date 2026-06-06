@@ -1,0 +1,56 @@
+<!--pages/cart/cart.wxml-->
+<view class="container">
+  <view wx:if="{{cart.length === 0}}" class="empty-cart">
+    <text class="empty-icon">🛒</text>
+    <text class="empty-text">购物车是空的</text>
+    <navigator url="/pages/index/index" open-type="switchTab" class="go-menu-btn">
+      去点餐
+    </navigator>
+  </view>
+
+  <view wx:else class="cart-content">
+    <!-- 购物车列表 -->
+    <view class="cart-list">
+      <view class="cart-item" wx:for="{{cart}}" wx:key="dish_id">
+        <view class="item-info">
+          <text class="item-name">{{item.dish_name}}</text>
+          <text class="item-price">¥{{item.unit_price}}</text>
+        </view>
+        <view class="item-actions">
+          <view class="quantity-control">
+            <view class="qty-btn" bindtap="decrease" data-index="{{index}}">-</view>
+            <text class="qty-num">{{item.quantity}}</text>
+            <view class="qty-btn" bindtap="increase" data-index="{{index}}">+</view>
+          </view>
+          <view class="delete-btn" bindtap="removeItem" data-index="{{index}}">删除</view>
+        </view>
+        <view class="item-note" wx:if="{{item.note}}">
+          <text>备注：{{item.note}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 备注 -->
+    <view class="remark-section">
+      <text class="remark-label">订单备注（选填）</text>
+      <textarea 
+        class="remark-input" 
+        placeholder="如：少辣、不要葱等"
+        value="{{remark}}"
+        bindinput="onRemarkInput"
+        maxlength="200"
+      />
+    </view>
+
+    <!-- 底部结算 -->
+    <view class="checkout-bar">
+      <view class="total-info">
+        <text class="total-label">合计：</text>
+        <text class="total-price">¥{{totalPrice}}</text>
+      </view>
+      <view class="checkout-btn" bindtap="checkout">
+        提交订单
+      </view>
+    </view>
+  </view>
+</view>
