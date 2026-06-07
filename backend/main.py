@@ -22,34 +22,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ========== 认证 ==========
-
-@app.post("/api/auth/login")
-def login(body: dict, db: Session = Depends(get_db)):
-    nickname = body.get('nickname', '').strip()
-    if not nickname:
-        raise HTTPException(status_code=400, detail='请输入昵称')
-    
-    member = db.query(Member).filter(Member.nickname == nickname).first()
-    if not member:
-        # 首次登录自动创建
-        member = Member(
-            nickname=nickname,
-            role='member',
-            family_code=secrets.token_hex(16)
-        )
-        db.add(member)
-        db.commit()
-        db.refresh(member)
-    
-    token = secrets.token_urlsafe(32)
-    return {"token": token, "member": {
-        "id": member.id,
-        "nickname": member.nickname,
-        "role": member.role,
-        "family_code": member.family_code
-    }}
-
 # ========== 菜品管理 ==========
 
 @app.get("/api/dishes")
@@ -160,7 +132,6 @@ def get_orders(status: Optional[str] = None, db: Session = Depends(get_db)):
     return {"code": 0, "data": [{
         "id": o.id,
         "order_no": o.order_no,
-        "member_id": o.member_id,
         "member_name": o.member_name,
         "items": o.items,
         "remark": o.remark,
@@ -170,17 +141,16 @@ def get_orders(status: Optional[str] = None, db: Session = Depends(get_db)):
 
 @app.post("/api/orders")
 def create_order(body: dict, db: Session = Depends(get_db)):
-    member = db.query(Member).filter(Member.id == body['member_id']).first()
-    if not member:
-        raise HTTPException(status_code=404, detail='成员不存在')
+    member_name = body.get('member_name', '').strip()
+    if not member_name:
+        raise HTTPException(status_code=400, detail='请输入昵称')
     
     items = body['items']
     
     order_no = datetime.now().strftime('%Y%m%d%H%M%S') + secrets.token_hex(3).upper()
     order = Order(
         order_no=order_no,
-        member_id=member.id,
-        member_name=member.nickname,
+        member_name=member_name,
         items=items,
         remark=body.get('remark'),
         status='pending'
@@ -199,54 +169,6 @@ def update_order_status(order_id: int, body: dict, db: Session = Depends(get_db)
     order.status = body['status']
     if body['status'] == 'done':
         order.completed_at = datetime.now()
-    db.commit()
-    return {"code": 0}
-
-# ========== 成员管理 ==========
-
-@app.get("/api/members")
-def get_members(db: Session = Depends(get_db)):
-    members = db.query(Member).all()
-    return {"code": 0, "data": [{
-        "id": m.id,
-        "nickname": m.nickname,
-        "role": m.role,
-        "family_code": m.family_code,
-        "created_at": m.created_at.strftime('%Y-%m-%d %H:%M'),
-    } for m in members]}
-
-@app.get("/api/members/stats")
-def get_member_stats(db: Session = Depends(get_db)):
-    members = db.query(Member).all()
-    result = []
-    for m in members:
-        orders = db.query(Order).filter(Order.member_id == m.id).all()
-        completed = sum(1 for o in orders if o.status == 'done')
-        result.append({
-            "nickname": m.nickname,
-            "role": m.role,
-            "order_count": len(orders),
-            "completed_orders": completed,
-        })
-    return {"code": 0, "data": result}
-
-@app.put("/api/members/{member_id}/role")
-def update_member_role(member_id: int, body: dict, db: Session = Depends(get_db)):
-    member = db.query(Member).filter(Member.id == member_id).first()
-    if not member:
-        raise HTTPException(status_code=404, detail='成员不存在')
-    member.role = body['role']
-    db.commit()
-    return {"code": 0}
-
-@app.delete("/api/members/{member_id}")
-def delete_member(member_id: int, db: Session = Depends(get_db)):
-    member = db.query(Member).filter(Member.id == member_id).first()
-    if not member:
-        raise HTTPException(status_code=404, detail='成员不存在')
-    if member.role == 'admin':
-        raise HTTPException(status_code=400, detail='不能删除管理员')
-    db.delete(member)
     db.commit()
     return {"code": 0}
 

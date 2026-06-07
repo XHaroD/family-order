@@ -3,20 +3,27 @@ App({
   globalData: {
     baseUrl: 'http://192.168.31.62:8000',
     userInfo: null,
-    cart: []  // 购物车
+    cart: []
   },
 
   onLaunch() {
-    // 检查登录状态
-    const userInfo = wx.getStorageSync('userInfo')
-    if (userInfo) {
-      this.globalData.userInfo = userInfo
+    // 检查是否有保存的用户名
+    const nickname = wx.getStorageSync('nickname')
+    if (nickname) {
+      this.globalData.userInfo = { nickname }
     }
+    
     // 加载购物车
     const cart = wx.getStorageSync('cart')
     if (cart) {
       this.globalData.cart = cart
     }
+  },
+
+  // 设置用户名
+  setNickname(nickname) {
+    this.globalData.userInfo = { nickname }
+    wx.setStorageSync('nickname', nickname)
   },
 
   // 保存购物车到本地

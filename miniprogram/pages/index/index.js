@@ -7,25 +7,28 @@ Page({
     categories: [],
     dishes: [],
     activeCategory: 0,
-    cartCount: 0
+    cartCount: 0,
+    showNicknameModal: false,
+    nicknameInput: ''
   },
 
   onLoad() {
-    this.checkLogin()
+    this.checkUser()
   },
 
   onShow() {
     this.setData({ cartCount: app.getCartCount() })
   },
 
-  checkLogin() {
+  checkUser() {
     const userInfo = app.globalData.userInfo
     if (!userInfo) {
-      wx.redirectTo({ url: '/pages/login/login' })
-      return
+      // 显示用户名输入弹窗
+      this.setData({ showNicknameModal: true })
+    } else {
+      this.setData({ userInfo })
+      this.loadData()
     }
-    this.setData({ userInfo })
-    this.loadData()
   },
 
   loadData() {
@@ -81,6 +84,10 @@ Page({
   },
 
   addToCart(e) {
+    if (!app.globalData.userInfo) {
+      this.setData({ showNicknameModal: true })
+      return
+    }
     const dish = e.currentTarget.dataset.item
     app.addToCart(dish)
     this.setData({ cartCount: app.getCartCount() })
@@ -89,5 +96,38 @@ Page({
 
   goCart() {
     wx.switchTab({ url: '/pages/cart/cart' })
+  },
+
+  // 昵称相关
+  onNicknameInput(e) {
+    this.setData({ nicknameInput: e.detail.value })
+  },
+
+  confirmNickname() {
+    const nickname = this.data.nicknameInput.trim()
+    if (!nickname) {
+      wx.showToast({ title: '请输入昵称', icon: 'error' })
+      return
+    }
+    app.setNickname(nickname)
+    this.setData({ 
+      userInfo: { nickname },
+      showNicknameModal: false,
+      nicknameInput: ''
+    })
+    this.loadData()
+  },
+
+  changeNickname() {
+    this.setData({ 
+      showNicknameModal: true,
+      nicknameInput: this.data.userInfo.nickname
+    })
+  },
+
+  hideNicknameModal() {
+    if (app.globalData.userInfo) {
+      this.setData({ showNicknameModal: false })
+    }
   }
 })

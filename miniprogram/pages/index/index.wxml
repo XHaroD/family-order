@@ -3,6 +3,7 @@
   <!-- 顶部用户信息 -->
   <view class="user-bar" wx:if="{{userInfo}}">
     <text class="user-name">👤 {{userInfo.nickname}}</text>
+    <text class="change-btn" bindtap="changeNickname">切换</text>
   </view>
 
   <!-- 分类标签 -->
@@ -50,5 +51,20 @@
     <view class="cart-icon">🛒</view>
     <view class="cart-count">{{cartCount}}</view>
     <view class="cart-text">已选 {{cartCount}} 道菜</view>
+  </view>
+
+  <!-- 用户名输入弹窗 -->
+  <view class="modal-mask" wx:if="{{showNicknameModal}}" bindtap="hideNicknameModal">
+    <view class="modal-content" catchtap="">
+      <view class="modal-title">请输入您的昵称</view>
+      <input 
+        class="nickname-input" 
+        placeholder="如：爸爸、妈妈、小明"
+        value="{{nicknameInput}}"
+        bindinput="onNicknameInput"
+        focus="{{showNicknameModal}}"
+      />
+      <view class="modal-btn" bindtap="confirmNickname">确定</view>
+    </view>
   </view>
 </view>

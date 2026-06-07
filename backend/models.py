@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, Text, Boolean, JSON
+from sqlalchemy import Column, Integer, String, DateTime, Text, JSON
 from datetime import datetime
 from database import Base
 
@@ -30,10 +30,9 @@ class Member(Base):
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer, primary_key=True, index=True)
-    order_no = Column(String(20), nullable=False, unique=True)  # 订单号
-    member_id = Column(Integer, nullable=False)
+    order_no = Column(String(20), nullable=False, unique=True)
     member_name = Column(String(50), nullable=False)
-    items = Column(JSON, nullable=False)  # 菜品列表 [{"dish_id":1,"dish_name":"米饭","quantity":2}]
+    items = Column(JSON, nullable=False)
     remark = Column(Text, nullable=True)
     status = Column(String(20), default='pending')  # pending/cooking/done/cancelled
     created_at = Column(DateTime, default=datetime.now)

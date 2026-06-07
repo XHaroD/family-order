@@ -9,6 +9,21 @@
   </view>
 
   <view wx:else class="cart-content">
+    <!-- 用户名输入 -->
+    <view class="nickname-section" wx:if="{{!userInfo}}">
+      <text class="nickname-label">您的昵称</text>
+      <input 
+        class="nickname-input" 
+        placeholder="如：爸爸、妈妈、小明"
+        value="{{nicknameInput}}"
+        bindinput="onNicknameInput"
+      />
+    </view>
+    <view class="nickname-section" wx:else>
+      <text class="nickname-label">👤 {{userInfo.nickname}}</text>
+      <text class="change-btn" bindtap="changeNickname">切换</text>
+    </view>
+
     <!-- 购物车列表 -->
     <view class="cart-list">
       <view class="cart-item" wx:for="{{cart}}" wx:key="dish_id">

@@ -5,7 +5,9 @@ Page({
   data: {
     cart: [],
     cartCount: 0,
-    remark: ''
+    remark: '',
+    userInfo: null,
+    nicknameInput: ''
   },
 
   onLoad() {
@@ -14,6 +16,7 @@ Page({
 
   onShow() {
     this.refreshCart()
+    this.setData({ userInfo: app.globalData.userInfo })
   },
 
   refreshCart() {
@@ -59,11 +62,30 @@ Page({
     this.setData({ remark: e.detail.value })
   },
 
+  onNicknameInput(e) {
+    this.setData({ nicknameInput: e.detail.value })
+  },
+
+  changeNickname() {
+    this.setData({ 
+      nicknameInput: this.data.userInfo.nickname,
+      userInfo: null
+    })
+  },
+
   checkout() {
-    const userInfo = app.globalData.userInfo
-    if (!userInfo) {
-      wx.redirectTo({ url: '/pages/login/login' })
+    // 检查昵称
+    let nickname = this.data.userInfo ? this.data.userInfo.nickname : this.data.nicknameInput.trim()
+    
+    if (!nickname) {
+      wx.showToast({ title: '请输入昵称', icon: 'error' })
       return
+    }
+
+    // 保存昵称
+    if (!this.data.userInfo) {
+      app.setNickname(nickname)
+      this.setData({ userInfo: { nickname } })
     }
 
     if (this.data.cart.length === 0) {
@@ -73,7 +95,7 @@ Page({
 
     wx.showLoading({ title: '提交中...' })
     
-    // 构建订单项（不含价格）
+    // 构建订单项
     const items = this.data.cart.map(item => ({
       dish_id: item.dish_id,
       dish_name: item.dish_name,
@@ -85,7 +107,7 @@ Page({
       url: `${app.globalData.baseUrl}/api/orders`,
       method: 'POST',
       data: {
-        member_id: userInfo.id,
+        member_name: nickname,
         items: items,
         remark: this.data.remark
       },
