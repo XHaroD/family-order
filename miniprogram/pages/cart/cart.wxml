@@ -2,9 +2,9 @@
 <view class="container">
   <view wx:if="{{cart.length === 0}}" class="empty-cart">
     <text class="empty-icon">🛒</text>
-    <text class="empty-text">购物车是空的</text>
+    <text class="empty-text">还没选菜呢</text>
     <navigator url="/pages/index/index" open-type="switchTab" class="go-menu-btn">
-      去点餐
+      去选菜
     </navigator>
   </view>
 
@@ -13,8 +13,10 @@
     <view class="cart-list">
       <view class="cart-item" wx:for="{{cart}}" wx:key="dish_id">
         <view class="item-info">
-          <text class="item-name">{{item.dish_name}}</text>
-          <text class="item-price">¥{{item.unit_price}}</text>
+          <view>
+            <text class="item-name">{{item.dish_name}}</text>
+            <view class="item-note" wx:if="{{item.note}}">备注：{{item.note}}</view>
+          </view>
         </view>
         <view class="item-actions">
           <view class="quantity-control">
@@ -23,9 +25,6 @@
             <view class="qty-btn" bindtap="increase" data-index="{{index}}">+</view>
           </view>
           <view class="delete-btn" bindtap="removeItem" data-index="{{index}}">删除</view>
-        </view>
-        <view class="item-note" wx:if="{{item.note}}">
-          <text>备注：{{item.note}}</text>
         </view>
       </view>
     </view>
@@ -44,12 +43,8 @@
 
     <!-- 底部结算 -->
     <view class="checkout-bar">
-      <view class="total-info">
-        <text class="total-label">合计：</text>
-        <text class="total-price">¥{{totalPrice}}</text>
-      </view>
       <view class="checkout-btn" bindtap="checkout">
-        提交订单
+        提交菜单（{{cartCount}}道菜）
       </view>
     </view>
   </view>

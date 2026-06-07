@@ -15,7 +15,6 @@ class Dish(Base):
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String(100), nullable=False)
     category_id = Column(Integer, nullable=False)
-    price = Column(Float, nullable=False)
     description = Column(Text, nullable=True)
     status = Column(Integer, default=1)  # 1=在售 0=下架
     created_at = Column(DateTime, default=datetime.now)
@@ -34,8 +33,7 @@ class Order(Base):
     order_no = Column(String(20), nullable=False, unique=True)  # 订单号
     member_id = Column(Integer, nullable=False)
     member_name = Column(String(50), nullable=False)
-    items = Column(JSON, nullable=False)  # 菜品列表 [{"dish_id":1,"dish_name":"米饭","quantity":2,"unit_price":3.0}]
-    total_price = Column(Float, nullable=False)
+    items = Column(JSON, nullable=False)  # 菜品列表 [{"dish_id":1,"dish_name":"米饭","quantity":2}]
     remark = Column(Text, nullable=True)
     status = Column(String(20), default='pending')  # pending/cooking/done/cancelled
     created_at = Column(DateTime, default=datetime.now)

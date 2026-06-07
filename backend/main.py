@@ -69,7 +69,6 @@ def get_dishes(status: Optional[int] = None, category_id: Optional[int] = None, 
         "name": d.name,
         "category_id": d.category_id,
         "category": categories.get(d.category_id, ''),
-        "price": d.price,
         "description": d.description,
         "status": d.status,
     } for d in dishes]}
@@ -79,7 +78,6 @@ def create_dish(body: dict, db: Session = Depends(get_db)):
     dish = Dish(
         name=body['name'],
         category_id=body['categoryId'],
-        price=body['price'],
         description=body.get('description', ''),
     )
     db.add(dish)
@@ -94,7 +92,6 @@ def update_dish(dish_id: int, body: dict, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail='菜品不存在')
     if 'name' in body: dish.name = body['name']
     if 'categoryId' in body: dish.category_id = body['categoryId']
-    if 'price' in body: dish.price = body['price']
     if 'description' in body: dish.description = body['description']
     if 'status' in body: dish.status = body['status']
     db.commit()
@@ -166,7 +163,6 @@ def get_orders(status: Optional[str] = None, db: Session = Depends(get_db)):
         "member_id": o.member_id,
         "member_name": o.member_name,
         "items": o.items,
-        "total_price": o.total_price,
         "remark": o.remark,
         "status": o.status,
         "created_at": o.created_at.strftime('%Y-%m-%d %H:%M'),
@@ -179,7 +175,6 @@ def create_order(body: dict, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail='成员不存在')
     
     items = body['items']
-    total = sum(i['quantity'] * i['unit_price'] for i in items)
     
     order_no = datetime.now().strftime('%Y%m%d%H%M%S') + secrets.token_hex(3).upper()
     order = Order(
@@ -187,7 +182,6 @@ def create_order(body: dict, db: Session = Depends(get_db)):
         member_id=member.id,
         member_name=member.nickname,
         items=items,
-        total_price=total,
         remark=body.get('remark'),
         status='pending'
     )
@@ -228,13 +222,11 @@ def get_member_stats(db: Session = Depends(get_db)):
     for m in members:
         orders = db.query(Order).filter(Order.member_id == m.id).all()
         completed = sum(1 for o in orders if o.status == 'done')
-        total = sum(o.total_price for o in orders)
         result.append({
             "nickname": m.nickname,
             "role": m.role,
             "order_count": len(orders),
             "completed_orders": completed,
-            "total_spent": total,
         })
     return {"code": 0, "data": result}
 

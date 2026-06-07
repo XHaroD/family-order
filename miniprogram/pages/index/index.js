@@ -84,7 +84,7 @@ Page({
     const dish = e.currentTarget.dataset.item
     app.addToCart(dish)
     this.setData({ cartCount: app.getCartCount() })
-    wx.showToast({ title: '已加入购物车', icon: 'success' })
+    wx.showToast({ title: '已加入', icon: 'success', duration: 800 })
   },
 
   goCart() {

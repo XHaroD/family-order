@@ -28,7 +28,7 @@
   <view class="order-list">
     <view class="order-card" wx:for="{{orders}}" wx:key="id">
       <view class="order-header">
-        <text class="order-no">订单号：{{item.order_no}}</text>
+        <text class="order-no">{{item.order_no}}</text>
         <text class="order-status {{item.status}}">
           {{item.status === 'pending' ? '待处理' : 
             item.status === 'cooking' ? '制作中' : 
@@ -44,7 +44,6 @@
         <view class="item" wx:for="{{item.items}}" wx:for-item="dish" wx:key="dish_id">
           <text class="item-name">{{dish.dish_name}}</text>
           <text class="item-qty">x{{dish.quantity}}</text>
-          <text class="item-price">¥{{dish.unit_price}}</text>
         </view>
       </view>
 
@@ -54,17 +53,16 @@
 
       <view class="order-footer">
         <text class="order-time">{{item.created_at}}</text>
-        <text class="order-total">合计：¥{{item.total_price}}</text>
       </view>
 
       <view class="order-actions" wx:if="{{item.status !== 'done' && item.status !== 'cancelled'}}">
         <view class="action-btn cooking" wx:if="{{item.status === 'pending'}}" 
               bindtap="updateStatus" data-id="{{item.id}}" data-status="cooking">
-          开始制作
+          开始做
         </view>
         <view class="action-btn done" wx:if="{{item.status === 'cooking'}}" 
               bindtap="updateStatus" data-id="{{item.id}}" data-status="done">
-          完成
+          做好了
         </view>
         <view class="action-btn cancel" 
               bindtap="updateStatus" data-id="{{item.id}}" data-status="cancelled">

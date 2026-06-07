@@ -29,14 +29,14 @@
           <view class="dish-header">
             <text class="dish-name">{{item.name}}</text>
             <view class="dish-status {{item.status === 1 ? 'on' : 'off'}}">
-              {{item.status === 1 ? '在售' : '下架'}}
+              {{item.status === 1 ? '可点' : '下架'}}
             </view>
           </view>
           <text class="dish-desc" wx:if="{{item.description}}">{{item.description}}</text>
           <view class="dish-footer">
-            <text class="dish-price">¥{{item.price}}</text>
+            <text class="dish-category">{{item.category}}</text>
             <view class="add-btn" bindtap="addToCart" data-item="{{item}}" wx:if="{{item.status === 1}}">
-              <text>+</text>
+              <text>+1</text>
             </view>
           </view>
         </view>
@@ -49,6 +49,6 @@
   <view class="cart-float" wx:if="{{cartCount > 0}}" bindtap="goCart">
     <view class="cart-icon">🛒</view>
     <view class="cart-count">{{cartCount}}</view>
-    <view class="cart-text">去购物车</view>
+    <view class="cart-text">已选 {{cartCount}} 道菜</view>
   </view>
 </view>

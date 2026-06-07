@@ -4,7 +4,7 @@ const app = getApp()
 Page({
   data: {
     cart: [],
-    totalPrice: 0,
+    cartCount: 0,
     remark: ''
   },
 
@@ -18,8 +18,8 @@ Page({
 
   refreshCart() {
     const cart = app.globalData.cart
-    const totalPrice = cart.reduce((sum, item) => sum + item.unit_price * item.quantity, 0)
-    this.setData({ cart, totalPrice })
+    const cartCount = cart.reduce((sum, item) => sum + item.quantity, 0)
+    this.setData({ cart, cartCount })
   },
 
   increase(e) {
@@ -67,18 +67,26 @@ Page({
     }
 
     if (this.data.cart.length === 0) {
-      wx.showToast({ title: '购物车为空', icon: 'error' })
+      wx.showToast({ title: '还没选菜', icon: 'error' })
       return
     }
 
     wx.showLoading({ title: '提交中...' })
     
+    // 构建订单项（不含价格）
+    const items = this.data.cart.map(item => ({
+      dish_id: item.dish_id,
+      dish_name: item.dish_name,
+      quantity: item.quantity,
+      note: item.note || ''
+    }))
+
     wx.request({
       url: `${app.globalData.baseUrl}/api/orders`,
       method: 'POST',
       data: {
         member_id: userInfo.id,
-        items: this.data.cart,
+        items: items,
         remark: this.data.remark
       },
       success: (res) => {

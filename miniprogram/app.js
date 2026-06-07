@@ -1,7 +1,7 @@
 // app.js
 App({
   globalData: {
-    baseUrl: 'http://172.17.0.1:8000',
+    baseUrl: 'http://192.168.31.62:8000',
     userInfo: null,
     cart: []  // 购物车
   },
@@ -36,7 +36,6 @@ App({
       cart.push({
         dish_id: dish.id,
         dish_name: dish.name,
-        unit_price: dish.price,
         quantity: quantity,
         note: note
       })
